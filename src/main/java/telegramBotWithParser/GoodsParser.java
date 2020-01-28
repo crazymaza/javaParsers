@@ -4,6 +4,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -12,6 +13,7 @@ import java.util.Map;
 
 public class GoodsParser {
     private Document document;
+    private String goodsList;
 
     public GoodsParser() {
         connect();
@@ -46,16 +48,21 @@ public class GoodsParser {
     }
 
     //Получаем название товара.
-    public Map<String, String> getProduct() {
-        Map<String, String> productList = new HashMap<>();
+    public String getProduct() {
+        Map<String, String> productMap = new HashMap<>();
         Elements titles = document.getElementsByClass("card-prod--title");
         Elements prices = document.getElementsByClass("favoritePrice");
 
         for (int i = 0; i != prices.size(); i++) {
-            productList.put(titles.get(i).text(), prices.get(i).text());
+            productMap.put(titles.get(i).text(), prices.get(i).text());
         }
 
-        return productList;
+        for (Map.Entry<String, String> a : productMap.entrySet()) {
+            goodsList += String.format("%s : %s\n", a.getKey(), a.getValue());
+            goodsList += "==============\n";
+        }
+
+        return goodsList;
     }
 
     public static void main(String[] args) {

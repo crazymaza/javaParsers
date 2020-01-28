@@ -47,9 +47,6 @@ public class Bot extends TelegramLongPollingBot {
     }
 
     public String getCatProducts() {
-        goodsParser.getProduct();
-        return String.format("%s \n %s",
-                goodsParser.getProduct(),
-                goodsParser.getPrice());
+        return goodsParser.getProduct();
     }
 }
