@@ -3,20 +3,31 @@ package telegramBotWithParser;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
+import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardRow;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Bot extends TelegramLongPollingBot {
+    private long chatId;
     private GoodsParser goodsParser = new GoodsParser();
+    private ReplyKeyboardMarkup keyboard = new ReplyKeyboardMarkup();
 
     @Override
     public void onUpdateReceived(Update update) {
-        long chatId = update.getMessage().getChatId();
+        chatId = update.getMessage().getChatId();
         update.getUpdateId();
         SendMessage sendMessage = new SendMessage()
                 .setChatId(chatId);
 
-        sendMessage.setText(messageRequest(update.getMessage().getText()));
+        //Устанавливаем клавиатуру для пользователя.
+        String text = update.getMessage().getText();
+        sendMessage.setReplyMarkup(keyboard);
+
         try {
+            sendMessage.setText(getMessage(text));
             execute(sendMessage);
         } catch (TelegramApiException e) {
             e.printStackTrace();
@@ -33,20 +44,63 @@ public class Bot extends TelegramLongPollingBot {
         return "1083689035:AAHYBGIhiWXHY-5FIDF8dN-CyEMs5G4Ibus";
     }
 
-    //Обработка сообщения.
-    public String messageRequest(String msg) {
-        if (msg.contains("Hi")
-                || msg.contains("Привет")
-                || msg.contains("Hello")) {
-            return "Привет! Начнём искать еду для Пифа или Липы?";
+    public String getCatProducts() {
+        SendMessage sendMessage = new SendMessage()
+                .setChatId(chatId);
+
+        List<String> p = goodsParser.getPrice();
+        List<String> t = goodsParser.getTitle();
+
+        String df = "";
+        int dss = p.size() / 2;
+
+        for (int i = 0; i < p.size(); i++) {
+            df += String.format("%s : %s\n", t.get(i), p.get(i));
+            df += "==============\n";
+            if (i == dss || i == p.size()) {
+                try {
+                    sendMessage.setText(df);
+                    execute(sendMessage);
+                    df = "";
+                } catch (TelegramApiException e) {
+                    e.printStackTrace();
+                }
+            }
         }
-        if(msg.contains("Липы")) {
+
+        return "fff";
+    }
+
+    //Делаем клавиатуру и обработку сообщений через неё.
+    public String getMessage(String msg) {
+        List<KeyboardRow> buttons = new ArrayList<>();
+
+        //Делаем 2 ряда кнопок.
+        KeyboardRow firstRow = new KeyboardRow();
+        KeyboardRow secondRow = new KeyboardRow();
+
+        //Параметры клавиатуры.
+        keyboard.setSelective(true);
+        keyboard.setResizeKeyboard(true);
+        keyboard.setOneTimeKeyboard(false);
+
+        if (msg.contains("/start")) {
+            return "Привет! Я помогу найти зоотовары для Пифа и Липы.\n Чтобы начать наберите \"Привет\" или \"Меню\".";
+        }
+        if (msg.contains("Привет") || msg.contains("Меню")) {
+//            buttons.clear();
+//            firstRow.clear();
+            firstRow.add("Для Пифа");
+            secondRow.add("Для Липы");
+            buttons.add(firstRow);
+            buttons.add(secondRow);
+            keyboard.setKeyboard(buttons);
+            return "Для кого ищем?";
+        }
+        if (msg.contains("Для Липы")) {
             return getCatProducts();
         }
         return "Это что за покемун?";
     }
 
-    public String getCatProducts() {
-        return goodsParser.getProduct();
-    }
 }

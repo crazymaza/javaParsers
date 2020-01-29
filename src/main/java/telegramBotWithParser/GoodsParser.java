@@ -13,11 +13,12 @@ import java.util.Map;
 
 public class GoodsParser {
     private Document document;
-    private String goodsList;
+    private String goodsList = "";
 
     public GoodsParser() {
         connect();
     }
+
 
     private void connect() {
         try {
@@ -34,6 +35,10 @@ public class GoodsParser {
         elements.forEach(element -> {
             titleList.add(element.text());
         });
+
+        titleList.stream().filter(item -> {
+            return item.length() > 1;
+        });
         return titleList;
     }
 
@@ -48,29 +53,37 @@ public class GoodsParser {
     }
 
     //Получаем название товара.
-    public String getProduct() {
-        Map<String, String> productMap = new HashMap<>();
-        Elements titles = document.getElementsByClass("card-prod--title");
-        Elements prices = document.getElementsByClass("favoritePrice");
-
-        for (int i = 0; i != prices.size(); i++) {
-            productMap.put(titles.get(i).text(), prices.get(i).text());
-        }
-
-        for (Map.Entry<String, String> a : productMap.entrySet()) {
-            goodsList += String.format("%s : %s\n", a.getKey(), a.getValue());
-            goodsList += "==============\n";
-        }
-
-        return goodsList;
-    }
+//    public List<String> getProduct() {
+////        Map<String, String> productMap = new HashMap<>();
+//        Elements titles = document.getElementsByClass("card-prod--title");
+//        Elements prices = document.getElementsByClass("favoritePrice");
+//
+////        for (int i = 0; i != prices.size(); i++) {
+////            productMap.put(titles.get(i).text(), prices.get(i).text());
+//////            goodsList += String.format("%s : %s\n", titles.get(i).text(), prices.get(i).text());
+//////            goodsList += "==============\n";
+////        }
+//
+////        for (Map.Entry<String, String> a : productMap.entrySet()) {
+////            goodsList += String.format("%s : %s\n", a.getKey(), a.getValue());
+////            goodsList += "==============\n";
+////        }
+//
+//        return productMap;
+//    }
 
     public static void main(String[] args) {
         GoodsParser gp = new GoodsParser();
+//        String sdd = gp.getProduct();
+//       gp int answerChar = 0;
+//        int count = sdd.length() % 2000;
+//        for (int i = 0; i < count; i++) {
+//            System.err.println("i = " + i);
+//            System.out.println(sdd.substring(answerChar, sdd.length() / count));
+//        }
 
-        System.out.println(gp.getTitle().get(0));
+//        sdd
     }
-
 }
 
 
