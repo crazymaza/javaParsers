@@ -4,7 +4,6 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.select.Elements;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,7 +21,7 @@ public class GoodsParser {
 
     private void connect() {
         try {
-            document = Jsoup.connect("https://goods.ru/catalog/suhie-korma-dlya-koshek/brand-pro-plan/").get();
+            document = Jsoup.connect("").get();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -31,7 +30,7 @@ public class GoodsParser {
     //Получаем название товара.
     public List<String> getTitle() {
         List<String> titleList = new ArrayList<>();
-        Elements elements = document.getElementsByClass("ddl_product_link");
+        Elements elements = document.getElementsByClass("card-prod--title");
         elements.forEach(element -> {
             titleList.add(element.text());
         });
@@ -52,28 +51,16 @@ public class GoodsParser {
         return priceList;
     }
 
-    //Получаем название товара.
-//    public List<String> getProduct() {
-////        Map<String, String> productMap = new HashMap<>();
-//        Elements titles = document.getElementsByClass("card-prod--title");
-//        Elements prices = document.getElementsByClass("favoritePrice");
-//
-////        for (int i = 0; i != prices.size(); i++) {
-////            productMap.put(titles.get(i).text(), prices.get(i).text());
-//////            goodsList += String.format("%s : %s\n", titles.get(i).text(), prices.get(i).text());
-//////            goodsList += "==============\n";
-////        }
-//
-////        for (Map.Entry<String, String> a : productMap.entrySet()) {
-////            goodsList += String.format("%s : %s\n", a.getKey(), a.getValue());
-////            goodsList += "==============\n";
-////        }
-//
-//        return productMap;
-//    }
+    public void getAllCards() {
+        Map<String, String> df = new HashMap<>();
+        Elements elements = document.getElementsByClass("card-prod");
+        elements.forEach(element -> {
+
+        });
+    }
 
     public static void main(String[] args) {
-        GoodsParser gp = new GoodsParser();
+//        GoodsParser gp = new GoodsParser();
 //        String sdd = gp.getProduct();
 //       gp int answerChar = 0;
 //        int count = sdd.length() % 2000;

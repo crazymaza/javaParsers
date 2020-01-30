@@ -46,7 +46,7 @@ public class Bot extends TelegramLongPollingBot {
 
     public String getCatProducts() {
         SendMessage sendMessage = new SendMessage()
-                .setChatId(chatId);
+                .setChatId(chatId).enableMarkdown(true);
 
         List<String> p = goodsParser.getPrice();
         List<String> t = goodsParser.getTitle();
@@ -55,9 +55,9 @@ public class Bot extends TelegramLongPollingBot {
         int dss = p.size() / 2;
 
         for (int i = 0; i < p.size(); i++) {
-            df += String.format("%s : %s\n", t.get(i), p.get(i));
+            df += String.format("%s : *%s*\n", t.get(i), p.get(i));
             df += "==============\n";
-            if (i == dss || i == p.size()) {
+            if (i == dss || i == p.size() - 1) {
                 try {
                     sendMessage.setText(df);
                     execute(sendMessage);
@@ -67,8 +67,7 @@ public class Bot extends TelegramLongPollingBot {
                 }
             }
         }
-
-        return "fff";
+        return "Anything else?";
     }
 
     //Делаем клавиатуру и обработку сообщений через неё.
@@ -76,6 +75,7 @@ public class Bot extends TelegramLongPollingBot {
         List<KeyboardRow> buttons = new ArrayList<>();
 
         //Делаем 2 ряда кнопок.
+        KeyboardRow zeroRow = new KeyboardRow();
         KeyboardRow firstRow = new KeyboardRow();
         KeyboardRow secondRow = new KeyboardRow();
 
@@ -85,11 +85,14 @@ public class Bot extends TelegramLongPollingBot {
         keyboard.setOneTimeKeyboard(false);
 
         if (msg.contains("/start")) {
+            firstRow.add("Меню");
+            buttons.add(firstRow);
+            keyboard.setKeyboard(buttons);
             return "Привет! Я помогу найти зоотовары для Пифа и Липы.\n Чтобы начать наберите \"Привет\" или \"Меню\".";
         }
-        if (msg.contains("Привет") || msg.contains("Меню")) {
-//            buttons.clear();
-//            firstRow.clear();
+        if (msg.contains("Меню")) {
+            buttons.clear();
+            firstRow.clear();
             firstRow.add("Для Пифа");
             secondRow.add("Для Липы");
             buttons.add(firstRow);
