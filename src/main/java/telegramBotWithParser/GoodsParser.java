@@ -14,18 +14,18 @@ public class GoodsParser {
     private Document document;
     private String goodsList = "";
 
-    public GoodsParser() {
-        connect();
-    }
-
-
-    private void connect() {
-        try {
-            document = Jsoup.connect("").get();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+//    public GoodsParser() {
+//        connect();
+//    }
+//
+//
+//    private void connect() {
+//        try {
+//            document = Jsoup.connect("").get();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     //Получаем название товара.
     public List<String> getTitle() {

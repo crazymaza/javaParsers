@@ -44,31 +44,31 @@ public class Bot extends TelegramLongPollingBot {
         return "1083689035:AAHYBGIhiWXHY-5FIDF8dN-CyEMs5G4Ibus";
     }
 
-    public String getCatProducts() {
-        SendMessage sendMessage = new SendMessage()
-                .setChatId(chatId).enableMarkdown(true);
-
-        List<String> p = goodsParser.getPrice();
-        List<String> t = goodsParser.getTitle();
-
-        String df = "";
-        int dss = p.size() / 2;
-
-        for (int i = 0; i < p.size(); i++) {
-            df += String.format("%s : *%s*\n", t.get(i), p.get(i));
-            df += "==============\n";
-            if (i == dss || i == p.size() - 1) {
-                try {
-                    sendMessage.setText(df);
-                    execute(sendMessage);
-                    df = "";
-                } catch (TelegramApiException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        return "Anything else?";
-    }
+//    public String getCatProducts() {
+//        SendMessage sendMessage = new SendMessage()
+//                .setChatId(chatId).enableMarkdown(true);
+//
+//        List<String> p = goodsParser.getPrice();
+//        List<String> t = goodsParser.getTitle();
+//
+//        String df = "";
+//        int dss = p.size() / 2;
+//
+//        for (int i = 0; i < p.size(); i++) {
+//            df += String.format("%s : *%s*\n", t.get(i), p.get(i));
+//            df += "==============\n";
+//            if (i == dss || i == p.size() - 1) {
+//                try {
+//                    sendMessage.setText(df);
+//                    execute(sendMessage);
+//                    df = "";
+//                } catch (TelegramApiException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//        }
+//        return "Anything else?";
+//    }
 
     //Делаем клавиатуру и обработку сообщений через неё.
     public String getMessage(String msg) {
@@ -101,7 +101,20 @@ public class Bot extends TelegramLongPollingBot {
             return "Для кого ищем?";
         }
         if (msg.contains("Для Липы")) {
-            return getCatProducts();
+            buttons.clear();
+            firstRow.clear();
+            firstRow.add("More than 4 kg");
+            secondRow.add("Pro Plan");
+            buttons.add(firstRow);
+            buttons.add(secondRow);
+            keyboard.setKeyboard(buttons);
+            return "Нужен фильтр или по всему товару?";
+        }
+        if (msg.contains("More than 4 kg")) {
+            return new Cat(msg).getCatProducts();
+        }
+        if (msg.contains("Pro Plan")) {
+            return new Cat(msg).getCatProducts();
         }
         return "Это что за покемун?";
     }
